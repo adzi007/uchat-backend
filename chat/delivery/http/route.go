@@ -27,6 +27,7 @@ func NewRouteUser(r *fiber.App, us domain.ChatService) {
 
 	r.Post("/chat/new", handler.CreateNewChat)
 	r.Post("/chat/send", handler.SendChat)
+	r.Put("/chat/setReaded", handler.SetReaded)
 
 }
 
@@ -145,7 +146,6 @@ func handleMediaUpload(ctx *fiber.Ctx) domain.ChatBubbleMedia {
 	}
 
 	return attachment
-
 }
 
 func (uh *ChatHandler) SendChat(ctx *fiber.Ctx) error {
@@ -211,5 +211,42 @@ func (uh *ChatHandler) SendChat(ctx *fiber.Ctx) error {
 		"pesan": "success create new chat",
 		"data":  chatBubble,
 	})
+}
 
+func (uh *ChatHandler) SetReaded(ctx *fiber.Ctx) error {
+
+	readedRequest := new(domain.SetReadedRequest)
+
+	if err := ctx.BodyParser(readedRequest); err != nil {
+		return err
+	}
+
+	// VALIDASI INPUT
+
+	var validate = validator.New()
+
+	errValidate := validate.Struct(readedRequest)
+
+	if errValidate != nil {
+		return ctx.Status(400).JSON(fiber.Map{
+			"message": "failed validate",
+			"error":   errValidate.Error(),
+		})
+	}
+
+	// UPDATE PROSES
+
+	err := uh.Cs.SetReadedChat(readedRequest.ChatRoomId, readedRequest.ChatBubbleId)
+
+	if err != nil {
+
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"pesan": "failed set readed chat by userId " + readedRequest.UserID,
+			"error": err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"pesan": "success set readed status by userId " + readedRequest.UserID,
+	})
 }

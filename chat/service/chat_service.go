@@ -27,3 +27,11 @@ func (cs chatService) SendChat(chat domain.ChatBubble, chatRoomId string) error 
 	return err
 
 }
+
+func (cs chatService) SetReadedChat(chatRoomId, chatBubbleId string) error {
+
+	err := cs.chatRepo.SetReadedChat(chatRoomId, chatBubbleId)
+
+	return err
+
+}

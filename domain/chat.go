@@ -36,6 +36,7 @@ type ChatBubble struct {
 	Message    string             `json:"message"`
 	Attachment ChatBubbleMedia    `json:"attachment"`
 	IsDeleted  bool               `json:"isDeleted"`
+	ReadedAt   *time.Time         `json:"readedAt,omitempty"`
 }
 
 type ChatCreateRequest struct {
@@ -53,12 +54,20 @@ type CreateChatBubbleRequest struct {
 	Attachment ChatBubbleMedia `json:"attachment"`
 }
 
+type SetReadedRequest struct {
+	UserID       string `json:"userId" validate:"required"`
+	ChatRoomId   string `json:"chatRoomId" validate:"required"`
+	ChatBubbleId string `json:"chatBubbleId" validate:"required"`
+}
+
 type ChatService interface {
 	CreateNewChat(Chat) error
 	SendChat(ChatBubble, string) error
+	SetReadedChat(chatRoomId, chatBubbleId string) error
 }
 
 type ChatRepository interface {
 	CreateNewChat(Chat) error
 	SendChat(ChatBubble, string) error
+	SetReadedChat(chatRoomId, chatBubbleId string) error
 }

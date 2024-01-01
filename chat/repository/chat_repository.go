@@ -3,6 +3,7 @@ package repository
 import (
 	"adzi-clean-architecture/domain"
 	"context"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -42,4 +43,27 @@ func (cr *chatRepo) SendChat(chat domain.ChatBubble, chatRoomId string) error {
 	_, err := cr.chatCollection.UpdateOne(context.Background(), filter, update)
 
 	return err
+}
+
+func (cr *chatRepo) SetReadedChat(chatRoomId, chatBubbleId string) error {
+
+	// objUserId, _ := primitive.ObjectIDFromHex(userId)
+	objChatRoomId, _ := primitive.ObjectIDFromHex(chatRoomId)
+	objChatBubbleId, _ := primitive.ObjectIDFromHex(chatBubbleId)
+
+	filter := bson.M{
+		"_id":          objChatRoomId,
+		"messages._id": objChatBubbleId,
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"messages.$.readedat": time.Now().UTC(),
+		},
+	}
+	_, err := cr.chatCollection.UpdateOne(context.Background(), filter, update)
+
+	return err
+
+	// return nil
 }
