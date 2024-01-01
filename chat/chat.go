@@ -22,11 +22,11 @@ func InitChat(app *fiber.App, dbConfig config.MongoDbInterface) {
 	// Service
 	chatService := service.NewChatService(chatRepo)
 
-	hub := delivery.NewHub()
+	hub := delivery.NewHub(chatService)
 	go hub.Run()
 
 	app.Use("/ws", delivery.AllowUpgrade)
-	app.Use("/ws/chat", websocket.New(delivery.Chat(hub)))
+	app.Use("/ws/chat/:chatRoomId", websocket.New(delivery.Chat(hub)))
 
 	http.NewRouteUser(app, chatService)
 

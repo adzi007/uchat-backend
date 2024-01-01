@@ -70,4 +70,5 @@ type ChatRepository interface {
 	CreateNewChat(Chat) error
 	SendChat(ChatBubble, string) error
 	SetReadedChat(chatRoomId, chatBubbleId string) error
+	GetChatRoomId(chatRoomId string) (*Chat, error)
 }

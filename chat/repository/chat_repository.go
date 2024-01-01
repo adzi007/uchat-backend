@@ -47,7 +47,6 @@ func (cr *chatRepo) SendChat(chat domain.ChatBubble, chatRoomId string) error {
 
 func (cr *chatRepo) SetReadedChat(chatRoomId, chatBubbleId string) error {
 
-	// objUserId, _ := primitive.ObjectIDFromHex(userId)
 	objChatRoomId, _ := primitive.ObjectIDFromHex(chatRoomId)
 	objChatBubbleId, _ := primitive.ObjectIDFromHex(chatBubbleId)
 
@@ -64,6 +63,20 @@ func (cr *chatRepo) SetReadedChat(chatRoomId, chatBubbleId string) error {
 	_, err := cr.chatCollection.UpdateOne(context.Background(), filter, update)
 
 	return err
+}
 
-	// return nil
+func (cr *chatRepo) GetChatRoomId(chatRoomId string) (*domain.Chat, error) {
+
+	objChatRoomId, _ := primitive.ObjectIDFromHex(chatRoomId)
+
+	filter := bson.M{
+		"_id": objChatRoomId,
+	}
+
+	var chatRoom *domain.Chat
+
+	err := cr.chatCollection.FindOne(context.Background(), filter).Decode(chatRoom)
+
+	return chatRoom, err
+
 }
