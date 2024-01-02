@@ -35,3 +35,9 @@ func (cs chatService) SetReadedChat(chatRoomId, chatBubbleId string) error {
 	return err
 
 }
+
+func (cs chatService) GetChatRoomId(chatRoomId string) (*domain.Chat, error) {
+
+	return cs.chatRepo.GetChatRoomId(chatRoomId)
+
+}

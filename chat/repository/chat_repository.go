@@ -75,7 +75,10 @@ func (cr *chatRepo) GetChatRoomId(chatRoomId string) (*domain.Chat, error) {
 
 	var chatRoom *domain.Chat
 
-	err := cr.chatCollection.FindOne(context.Background(), filter).Decode(chatRoom)
+	err := cr.chatCollection.FindOne(context.Background(), filter).Decode(&chatRoom)
+
+	// fmt.Println("chat repo res", chatRoom)
+	// fmt.Println("chat repo err", err)
 
 	return chatRoom, err
 

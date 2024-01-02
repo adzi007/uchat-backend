@@ -1,217 +1,217 @@
 package delivery
 
-import (
-	"adzi-clean-architecture/domain"
-	"fmt"
-	"time"
+// import (
+// 	"adzi-clean-architecture/domain"
+// 	"fmt"
+// 	"time"
 
-	"github.com/gofiber/contrib/websocket"
-	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
+// 	"github.com/gofiber/contrib/websocket"
+// 	"github.com/gofiber/fiber/v2"
+// 	"go.mongodb.org/mongo-driver/bson/primitive"
+// )
 
-type Message struct {
-	Name  string
-	Price string
-}
+// type Message struct {
+// 	Name  string
+// 	Price string
+// }
 
-type Hub struct {
-	clients              map[*websocket.Conn]bool
-	clientRegisterChanel chan *websocket.Conn
-	clientRemovalChanel  chan *websocket.Conn
-	broadcastChat        chan domain.ChatBubble
-	broadcastMessage     chan Message
-	chatService          domain.ChatService
-}
+// type Hub struct {
+// 	clients              map[*websocket.Conn]bool
+// 	clientRegisterChanel chan *websocket.Conn
+// 	clientRemovalChanel  chan *websocket.Conn
+// 	broadcastChat        chan domain.ChatBubble
+// 	broadcastMessage     chan Message
+// 	chatService          domain.ChatService
+// }
 
-func NewHub(cs domain.ChatService) *Hub {
-	return &Hub{
-		clients:              make(map[*websocket.Conn]bool),
-		clientRegisterChanel: make(chan *websocket.Conn),
-		// broadcastMessage:     make(chan domain.Chat),
-		broadcastMessage:    make(chan Message),
-		broadcastChat:       make(chan domain.ChatBubble),
-		clientRemovalChanel: make(chan *websocket.Conn),
-		chatService:         cs,
-	}
-}
+// func NewHub(cs domain.ChatService) *Hub {
+// 	return &Hub{
+// 		clients:              make(map[*websocket.Conn]bool),
+// 		clientRegisterChanel: make(chan *websocket.Conn),
+// 		// broadcastMessage:     make(chan domain.Chat),
+// 		broadcastMessage:    make(chan Message),
+// 		broadcastChat:       make(chan domain.ChatBubble),
+// 		clientRemovalChanel: make(chan *websocket.Conn),
+// 		chatService:         cs,
+// 	}
+// }
 
-func (h *Hub) Run() {
-	for {
-		select {
-		case conn := <-h.clientRegisterChanel:
-			h.clients[conn] = true
+// func (h *Hub) Run() {
+// 	for {
+// 		select {
+// 		case conn := <-h.clientRegisterChanel:
+// 			h.clients[conn] = true
 
-		case conn := <-h.clientRemovalChanel:
-			delete(h.clients, conn)
+// 		case conn := <-h.clientRemovalChanel:
+// 			delete(h.clients, conn)
 
-		case msg := <-h.broadcastMessage:
-			for conn := range h.clients {
-				_ = conn.WriteJSON(msg)
-			}
-		case chat := <-h.broadcastChat:
-			for conn := range h.clients {
-				_ = conn.WriteJSON(chat)
-			}
-		}
+// 		case msg := <-h.broadcastMessage:
+// 			for conn := range h.clients {
+// 				_ = conn.WriteJSON(msg)
+// 			}
+// 		case chat := <-h.broadcastChat:
+// 			for conn := range h.clients {
+// 				_ = conn.WriteJSON(chat)
+// 			}
+// 		}
 
-	}
-}
+// 	}
+// }
 
-func AllowUpgrade(ctx *fiber.Ctx) error {
-	if websocket.IsWebSocketUpgrade(ctx) {
-		return ctx.Next()
-	}
+// func AllowUpgradex(ctx *fiber.Ctx) error {
+// 	if websocket.IsWebSocketUpgrade(ctx) {
+// 		return ctx.Next()
+// 	}
 
-	return fiber.ErrUpgradeRequired
-}
+// 	return fiber.ErrUpgradeRequired
+// }
 
-func Chat(h *Hub) func(*websocket.Conn) {
-	return func(conn *websocket.Conn) {
+// func Chat(h *Hub) func(*websocket.Conn) {
+// 	return func(conn *websocket.Conn) {
 
-		defer func() {
-			h.clientRemovalChanel <- conn
-			_ = conn.Close()
-		}()
+// 		defer func() {
+// 			h.clientRemovalChanel <- conn
+// 			_ = conn.Close()
+// 		}()
 
-		// name := conn.Query("name", "anonymous")
-		h.clientRegisterChanel <- conn
+// 		// name := conn.Query("name", "anonymous")
+// 		h.clientRegisterChanel <- conn
 
-		for {
+// 		for {
 
-			messageType, _, err := conn.ReadMessage()
+// 			messageType, _, err := conn.ReadMessage()
 
-			if err != nil {
-				return
-			}
+// 			if err != nil {
+// 				return
+// 			}
 
-			if messageType == websocket.TextMessage {
+// 			if messageType == websocket.TextMessage {
 
-				var chatRequst domain.CreateChatBubbleRequest
+// 				var chatRequst domain.CreateChatBubbleRequest
 
-				errReadJson := conn.ReadJSON(&chatRequst)
+// 				errReadJson := conn.ReadJSON(&chatRequst)
 
-				if errReadJson != nil {
-					// Handle error
-					return
-				}
+// 				if errReadJson != nil {
+// 					// Handle error
+// 					return
+// 				}
 
-				// INPUT PROSES
-				userID, err := primitive.ObjectIDFromHex(chatRequst.UserID)
+// 				// INPUT PROSES
+// 				userID, err := primitive.ObjectIDFromHex(chatRequst.UserID)
 
-				if err != nil {
+// 				if err != nil {
 
-					fmt.Println("gagal 1", err.Error())
-					panic(err)
-				}
+// 					fmt.Println("gagal 1", err.Error())
+// 					panic(err)
+// 				}
 
-				replyId, err := primitive.ObjectIDFromHex(chatRequst.ReplyId)
+// 				replyId, err := primitive.ObjectIDFromHex(chatRequst.ReplyId)
 
-				chatBubble := domain.ChatBubble{
-					ID:        primitive.NewObjectID(),
-					Timestamp: time.Now().UTC(),
-					UserID:    userID,
-					Message:   chatRequst.Message,
-					IsDeleted: false,
-					ReadedAt:  nil,
-				}
+// 				chatBubble := domain.ChatBubble{
+// 					ID:        primitive.NewObjectID(),
+// 					Timestamp: time.Now().UTC(),
+// 					UserID:    userID,
+// 					Message:   chatRequst.Message,
+// 					IsDeleted: false,
+// 					ReadedAt:  nil,
+// 				}
 
-				if err == nil {
-					chatBubble.ReplyId = replyId
-				}
+// 				if err == nil {
+// 					chatBubble.ReplyId = replyId
+// 				}
 
-				errInserNewChat := h.chatService.SendChat(chatBubble, chatRequst.ChatRoomId)
+// 				errInserNewChat := h.chatService.SendChat(chatBubble, chatRequst.ChatRoomId)
 
-				if errInserNewChat != nil {
-					fmt.Println("errInserNewChat", errInserNewChat.Error())
-					return
-				}
+// 				if errInserNewChat != nil {
+// 					fmt.Println("errInserNewChat", errInserNewChat.Error())
+// 					return
+// 				}
 
-				h.broadcastChat <- chatBubble
+// 				h.broadcastChat <- chatBubble
 
-			}
+// 			}
 
-		}
+// 		}
 
-	}
-}
+// 	}
+// }
 
-func ChatRoom(h *Hub) func(*websocket.Conn) {
+// func ChatRoom(h *Hub) func(*websocket.Conn) {
 
-	return func(conn *websocket.Conn) {
+// 	return func(conn *websocket.Conn) {
 
-		defer func() {
-			h.clientRemovalChanel <- conn
-			_ = conn.Close()
-		}()
+// 		defer func() {
+// 			h.clientRemovalChanel <- conn
+// 			_ = conn.Close()
+// 		}()
 
-		h.clientRegisterChanel <- conn
+// 		h.clientRegisterChanel <- conn
 
-		fmt.Println("connect to chat room")
+// 		fmt.Println("connect to chat room")
 
-		for {
+// 		for {
 
-			messageType, pesan, err := conn.ReadMessage()
+// 			messageType, pesan, err := conn.ReadMessage()
 
-			if err != nil {
-				return
-			}
+// 			if err != nil {
+// 				return
+// 			}
 
-			if messageType == websocket.TextMessage {
+// 			if messageType == websocket.TextMessage {
 
-				h.broadcastMessage <- Message{
-					Price: string(pesan),
-				}
+// 				h.broadcastMessage <- Message{
+// 					Price: string(pesan),
+// 				}
 
-			}
+// 			}
 
-			// 	if messageType == websocket.TextMessage {
+// 			// 	if messageType == websocket.TextMessage {
 
-			// 		var chatRequst domain.CreateChatBubbleRequest
+// 			// 		var chatRequst domain.CreateChatBubbleRequest
 
-			// 		errReadJson := conn.ReadJSON(&chatRequst)
+// 			// 		errReadJson := conn.ReadJSON(&chatRequst)
 
-			// 		if errReadJson != nil {
-			// 			// Handle error
-			// 			return
-			// 		}
+// 			// 		if errReadJson != nil {
+// 			// 			// Handle error
+// 			// 			return
+// 			// 		}
 
-			// 		// INPUT PROSES
-			// 		userID, err := primitive.ObjectIDFromHex(chatRequst.UserID)
+// 			// 		// INPUT PROSES
+// 			// 		userID, err := primitive.ObjectIDFromHex(chatRequst.UserID)
 
-			// 		if err != nil {
+// 			// 		if err != nil {
 
-			// 			fmt.Println("gagal 1", err.Error())
-			// 			panic(err)
-			// 		}
+// 			// 			fmt.Println("gagal 1", err.Error())
+// 			// 			panic(err)
+// 			// 		}
 
-			// 		replyId, err := primitive.ObjectIDFromHex(chatRequst.ReplyId)
+// 			// 		replyId, err := primitive.ObjectIDFromHex(chatRequst.ReplyId)
 
-			// 		chatBubble := domain.ChatBubble{
-			// 			ID:        primitive.NewObjectID(),
-			// 			Timestamp: time.Now().UTC(),
-			// 			UserID:    userID,
-			// 			Message:   chatRequst.Message,
-			// 			IsDeleted: false,
-			// 			ReadedAt:  nil,
-			// 		}
+// 			// 		chatBubble := domain.ChatBubble{
+// 			// 			ID:        primitive.NewObjectID(),
+// 			// 			Timestamp: time.Now().UTC(),
+// 			// 			UserID:    userID,
+// 			// 			Message:   chatRequst.Message,
+// 			// 			IsDeleted: false,
+// 			// 			ReadedAt:  nil,
+// 			// 		}
 
-			// 		if err == nil {
-			// 			chatBubble.ReplyId = replyId
-			// 		}
+// 			// 		if err == nil {
+// 			// 			chatBubble.ReplyId = replyId
+// 			// 		}
 
-			// 		errInserNewChat := h.chatService.SendChat(chatBubble, chatRequst.ChatRoomId)
+// 			// 		errInserNewChat := h.chatService.SendChat(chatBubble, chatRequst.ChatRoomId)
 
-			// 		if errInserNewChat != nil {
-			// 			fmt.Println("errInserNewChat", errInserNewChat.Error())
-			// 			return
-			// 		}
+// 			// 		if errInserNewChat != nil {
+// 			// 			fmt.Println("errInserNewChat", errInserNewChat.Error())
+// 			// 			return
+// 			// 		}
 
-			// 		h.broadcastChat <- chatBubble
+// 			// 		h.broadcastChat <- chatBubble
 
-			// 	}
+// 			// 	}
 
-		}
+// 		}
 
-	}
-}
+// 	}
+// }
