@@ -14,13 +14,15 @@ import (
 )
 
 type ChatHandler struct {
-	Cs domain.ChatService
+	Cs     domain.ChatService
+	ChatWs domain.ChatWebsocket
 }
 
-func NewRouteUser(r *fiber.App, us domain.ChatService) {
+func NewRouteUser(r *fiber.App, us domain.ChatService, chatWs domain.ChatWebsocket) {
 
 	handler := &ChatHandler{
-		Cs: us,
+		Cs:     us,
+		ChatWs: chatWs,
 	}
 
 	r.Static("/public", config.ProjectRootPath+"/public")
@@ -206,6 +208,8 @@ func (uh *ChatHandler) SendChat(ctx *fiber.Ctx) error {
 			"error": errInserNewChat.Error(),
 		})
 	}
+
+	uh.ChatWs.Broadcast(chatBubble)
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"pesan": "success create new chat",

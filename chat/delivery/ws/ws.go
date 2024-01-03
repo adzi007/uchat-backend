@@ -11,14 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// type ChatRoomHub struct {
-// 	clients              map[*websocket.Conn]bool
-// 	clientRegisterChanel chan *websocket.Conn
-// 	clientRemovalChanel  chan *websocket.Conn
-// 	broadcastChat        chan domain.ChatBubble
-// 	chatService          domain.ChatService
-// }
-
 type chatWebsocket struct {
 	Clients              map[*websocket.Conn]bool
 	ClientRegisterChanel chan *websocket.Conn
@@ -73,8 +65,6 @@ func (h *chatWebsocket) Leave(client *websocket.Conn) {
 
 func (h *chatWebsocket) Broadcast(chatBubble domain.ChatBubble) {
 
-	fmt.Println("broadcasttxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-
 	h.BroadcastChat <- chatBubble
 }
 
@@ -97,26 +87,9 @@ func (h *chatWebsocket) HandleWsChatRoom() func(*websocket.Conn) {
 
 		for {
 
-			// messageType, _, err := c.ReadMessage()
-
-			fmt.Println("--------------------- ada lalulintas ws ---------------------")
-			// fmt.Println("messageType", messageType)
-
-			// if err != nil {
-			// 	return
-			// }
-
-			// if messageType == websocket.TextMessage {
-
 			var chatRequst domain.CreateChatBubbleRequest
 
-			fmt.Println("call brocast message 1")
-
 			errReadJson := c.ReadJSON(&chatRequst)
-
-			fmt.Println("errReadJson", errReadJson)
-
-			fmt.Println("call brocast message 2")
 
 			if errReadJson != nil {
 				// Handle error
@@ -128,7 +101,7 @@ func (h *chatWebsocket) HandleWsChatRoom() func(*websocket.Conn) {
 
 			if err != nil {
 
-				fmt.Println("gagal 1", err.Error())
+				fmt.Println("gagal", err.Error())
 				panic(err)
 			}
 
@@ -143,22 +116,17 @@ func (h *chatWebsocket) HandleWsChatRoom() func(*websocket.Conn) {
 				ReadedAt:  nil,
 			}
 
-			// fmt.Println("call brocast message")
-
 			if err == nil {
 				chatBubble.ReplyId = replyId
 			}
 
-			// errInserNewChat := h.ChatService.SendChat(chatBubble, chatRequst.ChatRoomId)
-			// if errInserNewChat != nil {
-			// 	fmt.Println("errInserNewChat", errInserNewChat.Error())
-			// 	return
-			// }
-
-			// fmt.Println("call brocast message")
+			errInserNewChat := h.ChatService.SendChat(chatBubble, chatRequst.ChatRoomId)
+			if errInserNewChat != nil {
+				fmt.Println("errInserNewChat", errInserNewChat.Error())
+				return
+			}
 
 			h.Broadcast(chatBubble)
-			// }
 
 		}
 

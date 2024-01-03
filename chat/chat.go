@@ -30,6 +30,6 @@ func InitChat(app *fiber.App, dbConfig config.MongoDbInterface) {
 	// app.Use("/ws/chat/:chatRoomId", websocket.New(delivery.Chat(hub)))
 	app.Use("/ws/chat/:chatRoomId", websocket.New(hub.HandleWsChatRoom()))
 
-	http.NewRouteUser(app, chatService)
+	http.NewRouteUser(app, chatService, hub)
 
 }
