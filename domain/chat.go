@@ -3,6 +3,7 @@ package domain
 import (
 	"time"
 
+	"github.com/gofiber/contrib/websocket"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -72,4 +73,20 @@ type ChatRepository interface {
 	SendChat(ChatBubble, string) error
 	SetReadedChat(chatRoomId, chatBubbleId string) error
 	GetChatRoomId(chatRoomId string) (*Chat, error)
+}
+
+type ChatRoomHub struct {
+	Clients              map[*websocket.Conn]bool
+	ClientRegisterChanel chan *websocket.Conn
+	ClientRemovalChanel  chan *websocket.Conn
+	BroadcastChat        chan ChatBubble
+	ChatService          ChatService
+}
+
+type ChatWebsocket interface {
+	Run()
+	Join(*websocket.Conn)
+	Leave(*websocket.Conn)
+	Broadcast(ChatBubble)
+	HandleWsChatRoom() func(*websocket.Conn)
 }

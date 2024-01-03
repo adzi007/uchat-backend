@@ -28,7 +28,7 @@ func InitChat(app *fiber.App, dbConfig config.MongoDbInterface) {
 
 	app.Use("/ws", delivery.AllowUpgrade)
 	// app.Use("/ws/chat/:chatRoomId", websocket.New(delivery.Chat(hub)))
-	app.Use("/ws/chat/:chatRoomId", websocket.New(delivery.HandleWsChatRoom(hub)))
+	app.Use("/ws/chat/:chatRoomId", websocket.New(hub.HandleWsChatRoom()))
 
 	http.NewRouteUser(app, chatService)
 
