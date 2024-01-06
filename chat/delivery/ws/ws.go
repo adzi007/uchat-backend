@@ -11,19 +11,30 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type roomChanel struct {
+	Client *websocket.Conn
+	RoomId string
+}
+
+type broadcastChanel struct {
+	RoomId      string
+	ChatMessage domain.ChatBubble
+}
+
 type chatWebsocket struct {
 	Clients              map[*websocket.Conn]bool
 	ClientRegisterChanel chan *websocket.Conn
 	ClientRemovalChanel  chan *websocket.Conn
-	BroadcastChat        chan domain.ChatBubble
+	BroadcastChat        chan broadcastChanel
 	ChatService          domain.ChatService
+	ChatRoomConnections  []roomChanel
 }
 
 func NewChatRoomHub(cs domain.ChatService) domain.ChatWebsocket {
 	return &chatWebsocket{
 		Clients:              make(map[*websocket.Conn]bool),
 		ClientRegisterChanel: make(chan *websocket.Conn),
-		BroadcastChat:        make(chan domain.ChatBubble),
+		BroadcastChat:        make(chan broadcastChanel),
 		ClientRemovalChanel:  make(chan *websocket.Conn),
 		ChatService:          cs,
 	}
@@ -40,9 +51,14 @@ func (h *chatWebsocket) Run() {
 
 		case chat := <-h.BroadcastChat:
 
-			for conn := range h.Clients {
-				_ = conn.WriteJSON(chat)
+			for i := range h.ChatRoomConnections {
+
+				if h.ChatRoomConnections[i].RoomId == chat.RoomId {
+					_ = h.ChatRoomConnections[i].Client.WriteJSON(chat.ChatMessage)
+				}
+
 			}
+
 		}
 	}
 }
@@ -54,8 +70,15 @@ func AllowUpgrade(ctx *fiber.Ctx) error {
 	return fiber.ErrUpgradeRequired
 }
 
-func (h *chatWebsocket) Join(client *websocket.Conn) {
+func (h *chatWebsocket) Join(client *websocket.Conn, roomId string) {
+
 	h.ClientRegisterChanel <- client
+
+	h.ChatRoomConnections = append(h.ChatRoomConnections, roomChanel{
+		Client: client,
+		RoomId: roomId,
+	})
+
 }
 
 func (h *chatWebsocket) Leave(client *websocket.Conn) {
@@ -63,17 +86,20 @@ func (h *chatWebsocket) Leave(client *websocket.Conn) {
 	_ = client.Close()
 }
 
-func (h *chatWebsocket) Broadcast(chatBubble domain.ChatBubble) {
+func (h *chatWebsocket) Broadcast(chatBubble domain.ChatBubble, roomId string) {
 
-	h.BroadcastChat <- chatBubble
+	h.BroadcastChat <- broadcastChanel{
+		RoomId:      roomId,
+		ChatMessage: chatBubble,
+	}
 }
 
 func (h *chatWebsocket) HandleWsChatRoom() func(*websocket.Conn) {
 
 	return func(c *websocket.Conn) {
 
-		vars := c.Params("chatRoomId")
-		room := h.GetRoom(vars)
+		chatRoomId := c.Params("chatRoomId")
+		room := h.GetRoom(chatRoomId)
 
 		if room == nil {
 			log.Printf("Room not found")
@@ -83,7 +109,7 @@ func (h *chatWebsocket) HandleWsChatRoom() func(*websocket.Conn) {
 
 		defer room.Leave(c)
 
-		room.Join(c)
+		room.Join(c, chatRoomId)
 
 		for {
 
@@ -120,13 +146,13 @@ func (h *chatWebsocket) HandleWsChatRoom() func(*websocket.Conn) {
 				chatBubble.ReplyId = replyId
 			}
 
-			errInserNewChat := h.ChatService.SendChat(chatBubble, chatRequst.ChatRoomId)
+			errInserNewChat := h.ChatService.SendChat(chatBubble, chatRoomId)
 			if errInserNewChat != nil {
 				fmt.Println("errInserNewChat", errInserNewChat.Error())
 				return
 			}
 
-			h.Broadcast(chatBubble)
+			h.Broadcast(chatBubble, chatRoomId)
 
 		}
 
@@ -138,7 +164,7 @@ func (h *chatWebsocket) GetRoom(roomID string) *chatWebsocket {
 	_, err := h.ChatService.GetChatRoomId(roomID)
 
 	if err != nil {
-		fmt.Println("gagal 1xxx", err.Error())
+		fmt.Println("gagal", err.Error())
 		panic(err)
 	}
 

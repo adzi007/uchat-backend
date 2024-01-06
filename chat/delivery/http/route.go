@@ -209,7 +209,7 @@ func (uh *ChatHandler) SendChat(ctx *fiber.Ctx) error {
 		})
 	}
 
-	uh.ChatWs.Broadcast(chatBubble)
+	uh.ChatWs.Broadcast(chatBubble, chatRequst.ChatRoomId)
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"pesan": "success create new chat",

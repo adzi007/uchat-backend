@@ -75,18 +75,18 @@ type ChatRepository interface {
 	GetChatRoomId(chatRoomId string) (*Chat, error)
 }
 
-type ChatRoomHub struct {
-	Clients              map[*websocket.Conn]bool
-	ClientRegisterChanel chan *websocket.Conn
-	ClientRemovalChanel  chan *websocket.Conn
-	BroadcastChat        chan ChatBubble
-	ChatService          ChatService
-}
+// type ChatRoomHub struct {
+// 	Clients              map[*websocket.Conn]bool
+// 	ClientRegisterChanel chan *websocket.Conn
+// 	ClientRemovalChanel  chan *websocket.Conn
+// 	BroadcastChat        chan ChatBubble
+// 	ChatService          ChatService
+// }
 
 type ChatWebsocket interface {
 	Run()
-	Join(*websocket.Conn)
+	Join(*websocket.Conn, string)
 	Leave(*websocket.Conn)
-	Broadcast(ChatBubble)
+	Broadcast(ChatBubble, string)
 	HandleWsChatRoom() func(*websocket.Conn)
 }
