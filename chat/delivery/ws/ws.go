@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"adzi-clean-architecture/domain"
+	"adzi-clean-architecture/pkg/utils"
 	"fmt"
 	"log"
 	"time"
@@ -65,7 +66,24 @@ func (h *chatWebsocket) Run() {
 
 func AllowUpgrade(ctx *fiber.Ctx) error {
 	if websocket.IsWebSocketUpgrade(ctx) {
-		return ctx.Next()
+
+		token := ctx.Get("token")
+
+		if token != "" {
+
+			_, err := utils.DecodeToken(token)
+
+			if err != nil {
+				return fiber.ErrUnauthorized
+			}
+
+			return ctx.Next()
+
+		} else {
+
+			return fiber.ErrUnauthorized
+		}
+
 	}
 	return fiber.ErrUpgradeRequired
 }
@@ -153,9 +171,7 @@ func (h *chatWebsocket) HandleWsChatRoom() func(*websocket.Conn) {
 			}
 
 			h.Broadcast(chatBubble, chatRoomId)
-
 		}
-
 	}
 }
 

@@ -22,8 +22,8 @@ func (cs chatService) CreateNewChat(newChat domain.Chat) error {
 
 func (cs chatService) SendChat(chat domain.ChatBubble, chatRoomId string) error {
 
-	// return cs.chatRepo.SendChat(chat, chatRoomId)
-	return nil
+	return cs.chatRepo.SendChat(chat, chatRoomId)
+	// return nil
 
 }
 
