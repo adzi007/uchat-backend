@@ -21,6 +21,12 @@ type User struct {
 	UserID       string             `json:"user_id"`
 }
 
+type UserResponseData struct {
+	Id    primitive.ObjectID `json:"_id,omitempty" bson:"_id"`
+	Nama  string             `json:"nama"`
+	Phone string             `json:"phone"`
+}
+
 type UserService interface {
 	GetUserAll() []*User
 	GetUserById(string) (*User, error)

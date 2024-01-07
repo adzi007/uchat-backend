@@ -7,15 +7,24 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type NewChatRequest struct {
+	ID          primitive.ObjectID `json:"_id,omitempty" bson:"_id"`
+	TimeCreated time.Time          `json:"timeCreated"`
+	Members     []string           `json:"members"`
+	// Members   map[string]User `json:"members"`
+	Messages []ChatBubble `json:"chatBubble"`
+}
+
 type Chat struct {
-	ID          primitive.ObjectID   `json:"_id,omitempty" bson:"_id"`
-	TimeCreated time.Time            `json:"timeCreated"`
-	Members     []primitive.ObjectID `json:"members"`
-	Messages    []ChatBubble         `json:"chatBubble"`
-	Type        string               `json:"type"`
-	CreatedAt   time.Time            `json:"created_at"`
-	UpdatedAt   time.Time            `json:"updated_at"`
-	IsDeleted   bool                 `json:"isDeleted"`
+	ID          primitive.ObjectID `json:"_id,omitempty" bson:"_id"`
+	TimeCreated time.Time          `json:"timeCreated"`
+	// Members     []primitive.ObjectID `json:"members"`
+	Members   map[string]*UserResponseData `json:"members"`
+	Messages  []ChatBubble                 `json:"chatBubble"`
+	Type      int32                        `json:"type"`
+	CreatedAt time.Time                    `json:"created_at"`
+	UpdatedAt time.Time                    `json:"updated_at"`
+	IsDeleted bool                         `json:"isDeleted"`
 }
 
 type DocumentAttachment struct {
@@ -62,10 +71,11 @@ type SetReadedRequest struct {
 }
 
 type ChatService interface {
-	CreateNewChat(Chat) error
+	CreateNewChat(NewChatRequest) (Chat, error)
 	SendChat(ChatBubble, string) error
 	SetReadedChat(chatRoomId, chatBubbleId string) error
 	GetChatRoomId(chatRoomId string) (*Chat, error)
+	GetChatRooms(userId string) ([]*Chat, error)
 }
 
 type ChatRepository interface {
@@ -73,6 +83,7 @@ type ChatRepository interface {
 	SendChat(ChatBubble, string) error
 	SetReadedChat(chatRoomId, chatBubbleId string) error
 	GetChatRoomId(chatRoomId string) (*Chat, error)
+	GetChatRooms(userId string) ([]*Chat, error)
 }
 
 type ChatWebsocket interface {

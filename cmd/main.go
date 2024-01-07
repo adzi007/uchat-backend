@@ -31,9 +31,11 @@ func main() {
 		logger.Fatal().Err(err)
 	}
 
-	user.InitUser(app, dbConnectionCongig)
+	_, userRepo := user.InitUser(app, dbConnectionCongig)
+
 	authentication.InitAuthentication(app, dbConnectionCongig)
-	chat.InitChat(app, dbConnectionCongig)
+
+	chat.InitChat(app, dbConnectionCongig, userRepo)
 
 	if err := app.Listen(":" + config.ENV.PORT_AP); err != nil {
 		logger.Fatal().Err(err).Msg("Fiber app error")

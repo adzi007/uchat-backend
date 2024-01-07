@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type userRepo struct {
@@ -48,7 +49,13 @@ func (userRepo *userRepo) GetUserById(id string) (*domain.User, error) {
 
 	var user *domain.User
 
-	err := userRepo.userCollection.FindOne(context.Background(), filter).Decode(&user)
+	projection := bson.M{
+		"_id":   1,
+		"nama":  1,
+		"phone": 1,
+	}
+
+	err := userRepo.userCollection.FindOne(context.Background(), filter, options.FindOne().SetProjection(projection)).Decode(&user)
 
 	return user, err
 

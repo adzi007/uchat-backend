@@ -18,14 +18,16 @@ type ChatHandler struct {
 	ChatWs domain.ChatWebsocket
 }
 
-func NewRouteUser(r *fiber.App, us domain.ChatService, chatWs domain.ChatWebsocket) {
+func NewRouteUser(r *fiber.App, cs domain.ChatService, chatWs domain.ChatWebsocket) {
 
 	handler := &ChatHandler{
-		Cs:     us,
+		Cs:     cs,
 		ChatWs: chatWs,
 	}
 
 	r.Static("/public", config.ProjectRootPath+"/public")
+
+	r.Get("/chat/chatrooms/:userId", handler.GetChatRooms)
 
 	r.Post("/chat/new", handler.CreateNewChat)
 	r.Post("/chat/send", handler.SendChat)
@@ -65,16 +67,22 @@ func (uh *ChatHandler) CreateNewChat(ctx *fiber.Ctx) error {
 		panic(err)
 	}
 
-	UserReceiverId, err := primitive.ObjectIDFromHex(chatRequst.UserReceiver)
+	// UserReceiverId, err := primitive.ObjectIDFromHex(chatRequst.UserReceiver)
 
-	if err != nil {
-		panic(err)
-	}
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	newChat := domain.Chat{
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// fmt.Println("UserCreatObj", UserCreatObj)
+
+	newChat := domain.NewChatRequest{
 		ID:          primitive.NewObjectID(),
 		TimeCreated: time.Now().UTC(),
-		Members:     []primitive.ObjectID{UserCreatId, UserReceiverId},
+		Members:     []string{chatRequst.UserCreate, chatRequst.UserReceiver},
 		Messages: []domain.ChatBubble{
 			{
 				ID:         primitive.NewObjectID(),
@@ -85,11 +93,27 @@ func (uh *ChatHandler) CreateNewChat(ctx *fiber.Ctx) error {
 				IsDeleted:  false,
 			},
 		},
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
 	}
 
-	errInserNewChat := uh.Cs.CreateNewChat(newChat)
+	// newChat := domain.Chat{
+	// 	ID:          primitive.NewObjectID(),
+	// 	TimeCreated: time.Now().UTC(),
+	// 	Members:     []primitive.ObjectID{UserCreatId, UserReceiverId},
+	// 	Messages: []domain.ChatBubble{
+	// 		{
+	// 			ID:         primitive.NewObjectID(),
+	// 			Timestamp:  time.Now().UTC(),
+	// 			UserID:     UserCreatId,
+	// 			Message:    chatRequst.Message,
+	// 			Attachment: attachment,
+	// 			IsDeleted:  false,
+	// 		},
+	// 	},
+	// 	CreatedAt: time.Now().UTC(),
+	// 	UpdatedAt: time.Now().UTC(),
+	// }
+
+	insertedChatRoom, errInserNewChat := uh.Cs.CreateNewChat(newChat)
 
 	if errInserNewChat != nil {
 
@@ -101,7 +125,7 @@ func (uh *ChatHandler) CreateNewChat(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"pesan": "success create new chat",
-		"data":  newChat,
+		"data":  insertedChatRoom,
 	})
 }
 
@@ -253,4 +277,26 @@ func (uh *ChatHandler) SetReaded(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"pesan": "success set readed status by userId " + readedRequest.UserID,
 	})
+}
+
+func (uh *ChatHandler) GetChatRooms(ctx *fiber.Ctx) error {
+
+	userId := ctx.Params("userId")
+
+	// fmt.Println("userId>>>>>>>>>>>>", userId)
+
+	data, err := uh.Cs.GetChatRooms(userId)
+
+	if err != nil {
+		return ctx.Status(fiber.ErrInternalServerError.Code).JSON(fiber.Map{
+			"message": "failed validate",
+			"error":   err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"pesan": "get chatroom by user",
+		"data":  data,
+	})
+
 }

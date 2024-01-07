@@ -2,6 +2,7 @@ package user
 
 import (
 	"adzi-clean-architecture/config"
+	"adzi-clean-architecture/domain"
 	"adzi-clean-architecture/user/delivery/http"
 	"adzi-clean-architecture/user/repository"
 	"adzi-clean-architecture/user/service"
@@ -9,7 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func InitUser(app *fiber.App, dbConfig config.MongoDbInterface) {
+func InitUser(app *fiber.App, dbConfig config.MongoDbInterface) (domain.UserService, domain.UserRepository) {
 
 	// Repository
 	userCollection := dbConfig.GetCollection("user")
@@ -19,5 +20,7 @@ func InitUser(app *fiber.App, dbConfig config.MongoDbInterface) {
 	userService := service.NewUserService(userRepo)
 
 	http.NewRouteUser(app, userService)
+
+	return userService, userRepo
 
 }

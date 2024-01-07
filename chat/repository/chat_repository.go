@@ -3,11 +3,14 @@ package repository
 import (
 	"adzi-clean-architecture/domain"
 	"context"
+	"fmt"
+	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type chatRepo struct {
@@ -77,8 +80,42 @@ func (cr *chatRepo) GetChatRoomId(chatRoomId string) (*domain.Chat, error) {
 
 	err := cr.chatCollection.FindOne(context.Background(), filter).Decode(&chatRoom)
 
-	// fmt.Println("chat repo res", chatRoom)
-	// fmt.Println("chat repo err", err)
+	return chatRoom, err
+
+}
+
+func (cr *chatRepo) GetChatRooms(userId string) ([]*domain.Chat, error) {
+
+	objUserId, _ := primitive.ObjectIDFromHex(userId)
+
+	filter := bson.M{
+		"members": bson.M{
+			"$elemMatch": bson.M{"$eq": objUserId},
+		},
+	}
+
+	var chatRoom []*domain.Chat
+
+	projection := bson.M{
+		"_id":         1,
+		"timeCreated": 1,
+		"messages": bson.M{
+			"$slice": bson.A{"$messages", -1},
+		},
+	}
+
+	data, err := cr.chatCollection.Find(context.Background(), filter, options.Find().SetProjection(projection))
+
+	if err != nil {
+
+		fmt.Println("error disini", err.Error())
+		panic(err)
+	}
+
+	if err := data.All(context.Background(), &chatRoom); err != nil {
+		fmt.Println("error disini", err.Error())
+		log.Fatal(err)
+	}
 
 	return chatRoom, err
 
