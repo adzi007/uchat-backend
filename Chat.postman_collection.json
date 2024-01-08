@@ -1,0 +1,349 @@
+{
+	"info": {
+		"_postman_id": "14f48d24-74a2-46d7-be65-e68d8c9e3817",
+		"name": "Chat",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26100255",
+		"_collection_link": "https://grey-satellite-91338.postman.co/workspace/golang-native-api~0d9415c0-c762-41df-b356-bfbb2c23c221/collection/26100255-14f48d24-74a2-46d7-be65-e68d8c9e3817?action=share&source=collection_link&creator=26100255"
+	},
+	"item": [
+		{
+			"name": "New Chat",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "userCreate",
+							"value": "62d1de99d913d01a3565fda7",
+							"type": "text"
+						},
+						{
+							"key": "userReceiver",
+							"value": "62d2e3ed3a12c95f773b5f83",
+							"type": "text"
+						},
+						{
+							"key": "message",
+							"value": "test buat baru dengan file",
+							"type": "text"
+						},
+						{
+							"key": "attachment",
+							"type": "file",
+							"src": "/home/adzi/Documents/Invoice Tokopedia.pdf",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/chat/new",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"chat",
+						"new"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "New Chat",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userCreate\": \"62cda02bf5a4d0c8cbf3795a\",\n    \"userReceiver\": \"62cda7d7f5a4d0c8cbf3795b\",\n    \"message\": \"test dari raw json\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/chat/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"chat",
+								"new"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 27 Dec 2023 16:11:17 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "603"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": {\n        \"_id\": \"658c4ca5a5a8061e7eb78dab\",\n        \"timeCreated\": \"2023-12-27T16:11:17.644514179Z\",\n        \"members\": [\n            \"62cda02bf5a4d0c8cbf3795a\",\n            \"62cda7d7f5a4d0c8cbf3795b\"\n        ],\n        \"chatBubble\": [\n            {\n                \"_id\": \"658c4ca5a5a8061e7eb78dac\",\n                \"timestamp\": \"2023-12-27T16:11:17.644518509Z\",\n                \"replyId\": \"000000000000000000000000\",\n                \"userId\": \"62cda02bf5a4d0c8cbf3795a\",\n                \"message\": \"test dari raw json\",\n                \"attachment\": {\n                    \"images\": null,\n                    \"video\": \"\",\n                    \"document\": {\n                        \"fileName\": \"\",\n                        \"size\": 0\n                    }\n                },\n                \"isDeleted\": false\n            }\n        ],\n        \"type\": \"\",\n        \"created_at\": \"2023-12-27T16:11:17.644519905Z\",\n        \"updated_at\": \"2023-12-27T16:11:17.644521861Z\",\n        \"isDeleted\": false\n    },\n    \"pesan\": \"success create new chat\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Send Chat",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkemlAZ21haWwuY29tIiwiZXhwIjoxNzAzMDUwMTg3LCJuYW1lIjoiIiwicm9sZSI6InVzZXIifQ.gE88liTexh5tAqv1pM58GFecBJxOut5eW70P3iby_5E",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "chatRoomId",
+							"value": "658c4ca5a5a8061e7eb78dab",
+							"type": "text"
+						},
+						{
+							"key": "userId",
+							"value": "62cda7d7f5a4d0c8cbf3795b",
+							"type": "text"
+						},
+						{
+							"key": "message",
+							"value": "test broadcast from route from user 5b",
+							"type": "text"
+						},
+						{
+							"key": "replyId",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "attachment",
+							"type": "file",
+							"src": "/home/adzi/Pictures/z_p26-How-to-be.jpg",
+							"disabled": true
+						},
+						{
+							"key": "attachment",
+							"type": "file",
+							"src": "/home/adzi/Pictures/C3L8BseWEAET5hv-1-e1485540959758.jpg",
+							"disabled": true
+						},
+						{
+							"key": "attachment",
+							"type": "file",
+							"src": "/home/adzi/Downloads/Video/Phrasal Verbs - Expressions with 'LET' - YouTube.mkv",
+							"disabled": true
+						},
+						{
+							"key": "attachment",
+							"type": "file",
+							"src": "/home/adzi/Downloads/document.pdf",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/chat/send",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"chat",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Readed",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "UserID",
+							"value": "62cda02bf5a4d0c8cbf3795a",
+							"type": "text"
+						},
+						{
+							"key": "chatRoomId",
+							"value": "658c4ca5a5a8061e7eb78dab",
+							"type": "text"
+						},
+						{
+							"key": "ChatBubbleId",
+							"value": "65928eb2349a1f09a0b6ab17",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:5000/chat/setReaded",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"chat",
+						"setReaded"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ChatRoom By User",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/chat/chatrooms/62d1de99d913d01a3565fda7",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"chat",
+						"chatrooms",
+						"62d1de99d913d01a3565fda7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Agus Permana\",\n    \"email\": \"aguspermana2023@gmail.com\",\n    \"address\": \"konoha\",\n    \"phone\": \"085712348890\",\n    \"password\":\"qwerty\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user test",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkemlAZ21haWwuY29tIiwiZXhwIjoxNzA0NTc1NDI1LCJuYW1lIjoiIiwicm9sZSI6InVzZXIifQ.UYvTchoMawQlzD6i8gzjVOm7FhAaSRzN2sswLqRPiAU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkemlAZ21haWwuY29tIiwiZXhwIjoxNzAzMDUxNDk0LCJuYW1lIjoiIiwicm9sZSI6InVzZXIifQ.vdLrBED7IP3xcckQ4j4-EoA_5yN9RZcwOTrTrJn7aQs",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Agus Permana\",\n    \"email\": \"aguspermana2023@gmail.com\",\n    \"address\": \"konoha\",\n    \"phone\": \"085712348890\",\n    \"password\":\"qwerty\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/user-test",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"user-test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"adzi@gmail.com\",\n    \"password\": \"qwerty123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

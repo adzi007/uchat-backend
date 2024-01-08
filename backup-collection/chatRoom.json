@@ -1,0 +1,64 @@
+{
+    "_id": {
+        "$oid": "659b223df11cd5c618eb3b4a"
+    },
+    "timecreated": {
+        "$date": {
+            "$numberLong": "1704665661729"
+        }
+    },
+    "members": {
+        "62d1de99d913d01a3565fda7": {
+            "_id": {
+                "$oid": "62d1de99d913d01a3565fda7"
+            },
+            "nama": "Udin",
+            "phone": "085759502818"
+        },
+        "62d2e3ed3a12c95f773b5f83": {
+            "_id": {
+                "$oid": "62d2e3ed3a12c95f773b5f83"
+            },
+            "nama": "Adzi DEv",
+            "phone": "085759502818"
+        }
+    },
+    "messages": [
+        {
+            "_id": {
+                "$oid": "659b223df11cd5c618eb3b4b"
+            },
+            "timestamp": {
+                "$date": {
+                    "$numberLong": "1704665661729"
+                }
+            },
+            "userid": {
+                "$oid": "62d1de99d913d01a3565fda7"
+            },
+            "message": "test buat baru dengan file",
+            "attachment": {
+                "images": null,
+                "video": "",
+                "document": {
+                    "filename": "",
+                    "size": 0
+                }
+            },
+            "isdeleted": false,
+            "readedat": null
+        }
+    ],
+    "type": 1,
+    "createdat": {
+        "$date": {
+            "$numberLong": "1704665661730"
+        }
+    },
+    "updatedat": {
+        "$date": {
+            "$numberLong": "1704665661730"
+        }
+    },
+    "isdeleted": false
+}

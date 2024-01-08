@@ -1,0 +1,94 @@
+[{
+  "_id": {
+    "$oid": "62cda02bf5a4d0c8cbf3795a"
+  },
+  "nama": "ujang",
+  "username": "ujang007",
+  "password": "kopiluwak11",
+  "email": "ujang29@gmail.com"
+},{
+  "_id": {
+    "$oid": "62cda7d7f5a4d0c8cbf3795b"
+  },
+  "nama": "asep",
+  "password": "asep123",
+  "username": "asep321",
+  "email": "asep112@gmail.com"
+},{
+  "_id": {
+    "$oid": "62cdc4eec49636e074e6c47f"
+  },
+  "nama": "udin",
+  "username": "udin007",
+  "password": "wakwaw123",
+  "email": "udin007@gmail.com"
+},{
+  "_id": {
+    "$oid": "62d0ff9754b788b15e443cfc"
+  },
+  "nama": "Dadang",
+  "username": "dadang77",
+  "password": "$2a$14$opT7ACZZ.bmb0CYZSlLsI.hhnMTuV.LahrZLPWtSHMXo59QbQxsGG",
+  "email": "dadang99@gmail.com",
+  "phone": "085759502818",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImRhZGFuZzk5QGdtYWlsLmNvbSIsIk5hbWUiOiJEYWRhbmciLCJMYXN0X25hbWUiOiIiLCJVaWQiOiIiLCJVc2VyX3R5cGUiOiJBRE1JTiIsImlzcyI6InRlc3QiLCJleHAiOjE1MTYyMzkwMjJ9.iwA8SSNGDNpH15qqLR0b4FEmT5GMDAMg_OTplNDmlpQ",
+  "user_type": "ADMIN",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6IiIsIk5hbWUiOiIiLCJMYXN0X25hbWUiOiIiLCJVaWQiOiIiLCJVc2VyX3R5cGUiOiIiLCJpc3MiOiJ0ZXN0IiwiZXhwIjoxNTE2MjM5MDIyfQ.HUkg9uLjtCDS01mhsr5B_w7sHg0ui1MaEITRNxzDRJk",
+  "created_at": {
+    "$date": {
+      "$numberLong": "1657864087000"
+    }
+  },
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657974046000"
+    }
+  },
+  "user_id": ""
+},{
+  "_id": {
+    "$oid": "62d1de99d913d01a3565fda7"
+  },
+  "nama": "Udin",
+  "username": "udin22",
+  "password": "$2a$14$BmTgh1mo1d6hr8Q7q6YBM.nyWMAmj3xuoSo2CRR4PKkHSyuX9vYd6",
+  "email": "udin22@gmail.com",
+  "phone": "085759502818",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6InVkaW4yMkBnbWFpbC5jb20iLCJOYW1lIjoiVWRpbiIsIkxhc3RfbmFtZSI6IiIsIlVpZCI6IiIsIlVzZXJfdHlwZSI6IkFETUlOIiwiaXNzIjoidGVzdCIsImV4cCI6MTUxNjIzOTAyMn0.mi86Aw3w8YUk6xRPKNOTKoypEu_Y6HN2tdzBDea6kKI",
+  "user_type": "ADMIN",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6IiIsIk5hbWUiOiIiLCJMYXN0X25hbWUiOiIiLCJVaWQiOiIiLCJVc2VyX3R5cGUiOiIiLCJpc3MiOiJ0ZXN0IiwiZXhwIjoxNTE2MjM5MDIyfQ.HUkg9uLjtCDS01mhsr5B_w7sHg0ui1MaEITRNxzDRJk",
+  "created_at": {
+    "$date": {
+      "$numberLong": "1657921177000"
+    }
+  },
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1657973998000"
+    }
+  },
+  "user_id": ""
+},{
+  "_id": {
+    "$oid": "62d2e3ed3a12c95f773b5f83"
+  },
+  "nama": "Adzi DEv",
+  "username": "adzi",
+  "password": "$2a$14$GgWee4veADWLbwf9USTYKuSlo5mMpIPQPWaRKGN4DMXkKa14WBata",
+  "email": "adzi@gmail.com",
+  "phone": "085759502818",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6ImFkemlAZ21haWwuY29tIiwiTmFtZSI6IiIsIkxhc3RfbmFtZSI6IiIsIlVpZCI6IiIsIlVzZXJfdHlwZSI6IkFETUlOIiwiaXNzIjoidGVzdCIsImV4cCI6MTY1ODA3NjI0NH0.OdD2w9MA1U54foWxqvo7P2vlThsbO0HEWFMjGEylYtI",
+  "user_type": "ADMIN",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFbWFpbCI6IiIsIk5hbWUiOiIiLCJMYXN0X25hbWUiOiIiLCJVaWQiOiIiLCJVc2VyX3R5cGUiOiIiLCJpc3MiOiJ0ZXN0IiwiZXhwIjoxNjU4MDc2NDI0fQ.-1WSN8agL79FGdPitj3pp-rsTnVbIWYaIUAvJLHW5kc",
+  "created_at": {
+    "$date": {
+      "$numberLong": "1657988077000"
+    }
+  },
+  "updated_at": {
+    "$date": {
+      "$numberLong": "1658076124000"
+    }
+  },
+  "user_id": ""
+}]
