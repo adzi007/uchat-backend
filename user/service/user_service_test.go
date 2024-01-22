@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -40,5 +41,10 @@ func TestGetUserAll(t *testing.T) {
 	resultMocked := realService.GetUserAll()
 
 	fmt.Println(resultMocked[0].Nama)
+
+	assert.Equal(t, mockUsers.Id, resultMocked[0].Id)
+	assert.Equal(t, mockUsers.Nama, resultMocked[0].Nama)
+	assert.Equal(t, mockUsers.Username, resultMocked[0].Username)
+	assert.Equal(t, mockUsers.Password, resultMocked[0].Password)
 
 }
